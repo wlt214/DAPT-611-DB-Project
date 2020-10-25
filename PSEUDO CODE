@@ -1,0 +1,71 @@
+/*Metrics*/
+/*Funding Metrics*/
+/* 1. Total Funding*/
+Select * from Funding where Date is between 1/1/YY & 12/31/YY
+
+/* 2.*Total Funding by Funding_Type* how many donations by each funding type*/
+Donation_Funding_Type (Year) <- Select Count(Amount) from Funding where Date is between 1/1/YY & 12/31/YY & Where Funding_Type is (Org/Donor)
+
+/* 3. Total Funding by Organization* Which Organization/Donor donated the most each year*/
+Select * from Funding where Date is between 1/1/YY & 12/31/YY & Where Funding_Type is (Org)
+    Inner Join Donor.Org_ID = Funding.Org_ID
+    
+/* 4. Tuesday Giving Doations */   
+Select * from Funding where Date is between ("Tuesday Giving") & Where Funding_Type is (Org)
+    Inner Join Donor.Org_ID = Funding.Org_ID
+
+/* 5. % Donations by Type */ << would show where Development Team needs to focus on getting new donations   
+Donation Type % <- Funding_Type / Total Donations
+Total Donations By Year <- Select Count(Amount) Filter Year
+
+Donation Type % <- Donation_Funding_Type (Year) / Total Donations By Year
+
+/* 6. Most Donations by Donor Type, Annually */ << would show Highest Donor by Type, could be helpful Annual Awards
+Select * from Funding by Single Donor (within each type) filter on Year / 
+Select * from Funding by All Donor (within each type) filter on Year
+
+
+ 
+
+/* VOLUNTEERS */
+/*1 How Many times one Volunteer volunteers in a Year */
+Select Count from Projects where Product.Volunteer_ID = V.Vounteer_ID filter in Project.Year
+
+/*2 Volunteers by Year */
+
+Volunteers (YYYY)Signed up in a Year <- Select Count from Volunteer where Date_Created = __/__/YY 
+
+/*3 Forecast Annual Growth in Volunteers by Year */
+(Volunteers YEAR - Volunteers PRIOR YEAR) / Volunteers PRIOR YEAR
+
+Total Volunteers Signed up in a Year <- Select Count from Volunteer where Date_Created = __/__/YY 
+
+/* % Projects Completed */
+/*1 Projects Completed % */
+Projects-Completed <- Select Count(Project_Status = "Complete")
+Projects-Total <- Select Count(Project_Status = "*")
+
+% Projects Completed <- 
+    Projects-Completed/
+    Projects-Total 
+
+/* Number of Communities Receiving A Completed Project */
+/* Served A community because they had a particular need*/
+
+Total Communities <- Select Count(*) from Community
+Total Underserved Communities <- Select Count(*) from Community where Community_Type = "Underserved"
+
+Projects_Completed_Underserved <- Select Count(Project_Status = "Complete") where Community_Type = "Underserved"
+
+Projects-Total <- Select Count(Project_Status = "*")
+
+/* % of Projects Completed Underserved Communities*/
+% of Projects Completed in Underserved Communities <- (Projects_Completed_Underserved/Projects_Completed)
+
+/* % of Projects Completed Community_Type*/ << could show if volunteer staffing structure needs to be changed
+% of Projects Completed by Community_Type <- (Projects_Completed_Type/Projects_Total)
+
+Table:
+Underserved Affluent 
+# Complete/
+Total Projects
